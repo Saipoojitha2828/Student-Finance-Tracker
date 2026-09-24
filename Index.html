@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Finance Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <h1>Student Finance Tracker</h1>
+            <p>Track your expenses, manage your allowance</p>
+            
+            <button id="googleLoginBtn" class="btn-google">
+                Login with Google
+            </button>
+            
+            <p class="login-info">Login with your Gmail account to sync data across devices</p>
+        </div>
+    </div>
+
+    <div id="appScreen" class="screen hidden">
+        <header class="header">
+            <div class="header-left">
+                <h1>Finance Tracker</h1>
+                <p id="userEmail"></p>
+            </div>
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </header>
+
+        <div id="lowBalanceAlert" class="alert alert-warning hidden">
+            Low Balance Alert! Your balance is below 100!
+        </div>
+
+        <div class="balance-card">
+            <h2>Current Balance</h2>
+            <p class="balance-amount" id="currentBalance">0</p>
+        </div>
+
+        <div class="summary-cards">
+            <div class="card">
+                <h3>Total Income</h3>
+                <p id="totalIncome">0</p>
+            </div>
+            <div class="card">
+                <h3>Total Spent</h3>
+                <p id="totalSpent">0</p>
+            </div>
+            <div class="card">
+                <h3>Total Saved</h3>
+                <p id="totalSaved">0</p>
+            </div>
+            <div class="card">
+                <h3>Save Percentage</h3>
+                <p id="savePercentage">0%</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('transactions')">Transactions</button>
+            <button class="tab-btn" onclick="switchTab('goals')">Goals</button>
+            <button class="tab-btn" onclick="switchTab('budgets')">Budgets</button>
+            <button class="tab-btn" onclick="switchTab('comparison')">Comparison</button>
+        </div>
+
+        <div id="transactionsTab" class="tab-content active">
+            <div class="add-section">
+                <div class="add-income">
+                    <h3>Add Income</h3>
+                    <input type="number" id="incomeAmount" placeholder="Amount" min="0">
+                    <input type="date" id="incomeDate">
+                    <input type="text" id="incomeSource" placeholder="Source">
+                    <button onclick="addIncome()" class="btn-add">Add Income</button>
+                </div>
+
+                <div class="add-expense">
+                    <h3>Add Expense</h3>
+                    <input type="number" id="expenseAmount" placeholder="Amount" min="0">
+                    <input type="date" id="expenseDate">
+                    <select id="expenseCategory">
+                        <option value="">Select Category</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Studies">Studies</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="text" id="expenseDescription" placeholder="Description">
+                    <button onclick="addExpense()" class="btn-add">Add Expense</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Filter Transactions</h3>
+                <div class="filter-controls">
+                    <input type="date" id="filterStartDate" placeholder="From Date">
+                    <input type="date" id="filterEndDate" placeholder="To Date">
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Studies">Studies</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <button onclick="applyFilters()" class="btn-filter">Apply Filter</button>
+                    <button onclick="clearFilters()" class="btn-filter-clear">Clear</button>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <h2>Spending by Category</h2>
+                <canvas id="spendingChart"></canvas>
+            </div>
+
+            <div class="transactions-section">
+                <h2>Recent Transactions</h2>
+                <div id="transactionsList" class="transactions-list">
+                </div>
+            </div>
+        </div>
+
+      <div id="goalsTab" class="tab-content">
+
+    <!-- EMPTY STATE -->
+    <div id="goalsEmptyState" class="empty-state">
+
+        <h2>No Goals Yet</h2>
+
+        <p>Create your first savings goal to get started</p>
+
+        <button onclick="showGoalsForm()" class="btn-empty-state">
+            Create Goal
+        </button>
+
+        <!-- GOAL FORM -->
+        <div id="goalsFormContainer" class="add-goal hidden">
+
+            <h3>Create Savings Goal</h3>
+
+            <input
+                type="text"
+                id="goalName"
+                placeholder="Goal name"
+            >
+
+            <input
+                type="number"
+                id="goalAmount"
+                placeholder="Target amount"
+                min="0"
+            >
+
+            <button onclick="addGoal()" class="btn-add">
+                Create Goal
+            </button>
+
+            <button onclick="hideGoalsForm()" class="btn-cancel">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="goalsPopulatedState" class="populated-state hidden">
+
+        <div class="header-with-button">
+
+            <h2>My Goals</h2>
+
+            <button onclick="showGoalsForm()" class="btn-add-new">
+                Add Goal
+            </button>
+
+        </div>
+
+        <div class="goals-form-area">
+
+            <!-- FORM WILL APPEAR HERE WHEN ADD GOAL IS CLICKED -->
+            <div id="goalsPopulatedForm" class="add-goal hidden">
+
+                <h3>Create Savings Goal</h3>
+
+                <input
+                    type="text"
+                    id="goalNamePopulated"
+                    placeholder="Goal name"
+                >
+
+                <input
+                    type="number"
+                    id="goalAmountPopulated"
+                    placeholder="Target amount"
+                    min="0"
+                >
+
+                <button onclick="addGoal()" class="btn-add">
+                    Create Goal
+                </button>
+
+                <button onclick="hideGoalsForm()" class="btn-cancel">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="goals-list" id="goalsList"></div>
+
+    </div>
+
+</div>
+
+        <div id="goalsPopulatedState" class="populated-state hidden">
+                <div class="header-with-button">
+                    <h2>My Goals</h2>
+                    <button onclick="showGoalsForm()" class="btn-add-new">Add Goal</button>
+                </div>
+
+                <div class="side-by-side-container">
+                    <div class="side-left">
+                        <div class="add-goal hidden" id="goalsFormContainer">
+                            <h3>Create Savings Goal</h3>
+                            <input type="text" id="goalName" placeholder="Goal name">
+                            <input type="number" id="goalAmount" placeholder="Target amount" min="0">
+                            <button onclick="addGoal()" class="btn-add">Create Goal</button>
+                            <button onclick="hideGoalsForm()" class="btn-cancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="side-right">
+                        <div class="goals-list" id="goalsList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <div id="budgetsTab" class="tab-content">
+
+    <!-- EMPTY STATE -->
+    <div id="budgetsEmptyState" class="empty-state">
+
+        <h2>No Budgets Yet</h2>
+
+        <p>Set your first category budget to start tracking</p>
+
+        <button onclick="showBudgetsForm()" class="btn-empty-state">
+            Set Budget
+        </button>
+
+        <!-- BUDGET FORM -->
+        <div id="budgetsFormContainer" class="add-budget hidden">
+
+            <h3>Set Category Budget</h3>
+
+            <select id="budgetCategory">
+
+                <option value="">Select Category</option>
+
+                <option value="Food">Food</option>
+
+                <option value="Transport">Transport</option>
+
+                <option value="Entertainment">Entertainment</option>
+
+                <option value="Shopping">Shopping</option>
+
+                <option value="Education">Education</option>
+
+                <option value="Healthcare">Healthcare</option>
+
+                <option value="Other">Other</option>
+
+            </select>
+
+            <input
+                type="number"
+                id="budgetAmount"
+                placeholder="Max spending"
+                min="0"
+            >
+
+            <button onclick="addBudget()" class="btn-add">
+                Set Budget
+            </button>
+
+            <button onclick="hideBudgetsForm()" class="btn-cancel">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- POPULATED STATE -->
+    <div id="budgetsPopulatedState" class="populated-state hidden">
+
+        <div class="header-with-button">
+
+            <h2>My Budgets</h2>
+
+            <button onclick="showBudgetsForm()" class="btn-add-new">
+                Add Budget
+            </button>
+
+        </div>
+
+
+        <div class="budgets-form-area">
+
+            <!-- FORM FOR ADDING MORE BUDGETS -->
+            <div id="budgetsPopulatedForm" class="add-budget hidden">
+
+                <h3>Set Category Budget</h3>
+
+                <select id="budgetCategoryPopulated">
+
+                    <option value="">Select Category</option>
+
+                    <option value="Food">Food</option>
+
+                    <option value="Transport">Transport</option>
+
+                    <option value="Entertainment">Entertainment</option>
+
+                    <option value="Shopping">Shopping</option>
+
+                    <option value="Education">Education</option>
+
+                    <option value="Healthcare">Healthcare</option>
+
+                    <option value="Other">Other</option>
+
+                </select>
+
+                <input
+                    type="number"
+                    id="budgetAmountPopulated"
+                    placeholder="Max spending"
+                    min="0"
+                >
+
+                <button onclick="addBudget()" class="btn-add">
+                    Set Budget
+                </button>
+
+                <button onclick="hideBudgetsForm()" class="btn-cancel">
+                    Cancel
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="budgets-list" id="budgetsList"></div>
+
+    </div>
+
+</div>
+      <div id="comparisonTab" class="tab-content">
+        <div class="comparison-container">
+            <h2>Monthly Comparison</h2>
+            <div id="comparisonStats" class="comparison-stats">
+                <p style="text-align: center; color: #999;">Loading comparison...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

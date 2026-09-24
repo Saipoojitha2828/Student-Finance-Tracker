@@ -1,0 +1,962 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.screen {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.login-container {
+    background: white;
+    border-radius: 15px;
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-container h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.login-container p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.btn-google {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    background: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: background 0.3s;
+}
+
+.btn-google:hover {
+    background: #357ae8;
+}
+
+.login-info {
+    font-size: 12px;
+    color: #999;
+}
+
+#appScreen {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 1200px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-height: none;
+    overflow-y: visible;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    display: block;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
+}
+
+.header-left h1 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.header-left p {
+    color: #666;
+    font-size: 14px;
+}
+
+.btn-logout {
+    padding: 10px 20px;
+    background: #FF6B6B;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background: #ff5252;
+}
+
+.balance-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.balance-card h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.balance-amount {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border-left: 4px solid #667eea;
+}
+
+.card h3 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: white;
+}
+
+.tab-btn:hover {
+    background: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.add-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.add-income, .add-expense {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.add-income h3, .add-expense h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.add-income input, .add-income button,
+.add-expense input, .add-expense select, .add-expense button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.add-income input:focus, .add-income button:focus,
+.add-expense input:focus, .add-expense select:focus, .add-expense button:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.btn-add {
+    background: #667eea;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-add:hover {
+    background: #5568d3;
+}
+
+.filter-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.filter-section h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.filter-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.filter-controls input,
+.filter-controls select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.btn-filter {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-filter:hover {
+    background: #5568d3;
+}
+
+.btn-filter-clear {
+    background: #999;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-filter-clear:hover {
+    background: #777;
+}
+
+.chart-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.chart-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+#spendingChart {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.transactions-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.transactions-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.transactions-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.transaction-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #667eea;
+}
+
+.transaction-item.income {
+    border-left-color: #51cf66;
+}
+
+.transaction-item.expense {
+    border-left-color: #ff6b6b;
+}
+
+.transaction-info {
+    flex: 1;
+}
+
+.transaction-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.transaction-description {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.transaction-amount {
+    font-size: 18px;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.transaction-amount.income {
+    color: #51cf66;
+}
+
+.transaction-amount.expense {
+    color: #ff6b6b;
+}
+
+.btn-delete {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background: #ff5252;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    min-height: 400px;
+    text-align: center;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.empty-state h2 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.btn-empty-state {
+    padding: 15px 40px;
+    font-size: 16px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-empty-state:hover {
+    background: #5568d3;
+}
+
+/* POPULATED STATE */
+.populated-state {
+    display: block;
+}
+
+.header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.header-with-button h2 {
+    color: #333;
+    font-size: 24px;
+    margin: 0;
+}
+
+.btn-add-new {
+    padding: 10px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-add-new:hover {
+    background: #5568d3;
+}
+
+.btn-cancel {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #999;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #777;
+}
+
+/* GOALS */
+.add-goal {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.add-goal h3 {
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.add-goal input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.add-goal input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.add-goal button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.add-goal .btn-add {
+    background: #667eea;
+    color: white;
+}
+
+.add-goal .btn-add:hover {
+    background: #5568d3;
+}
+
+.add-goal .btn-cancel {
+    background: #999;
+    color: white;
+}
+
+.add-goal .btn-cancel:hover {
+    background: #777;
+}
+
+.goals-list {
+    display: grid;
+    gap: 15px;
+}
+
+.goal-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.goal-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.goal-progress {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 30px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.goal-progress-bar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    transition: width 0.3s;
+}
+
+.goal-stats {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.goal-stats p {
+    margin: 5px 0;
+}
+
+.btn-delete-goal {
+    width: 100%;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-delete-goal:hover {
+    background: #ff5252;
+}
+
+/* BUDGETS */
+.add-budget {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.add-budget h3 {
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.add-budget input,
+.add-budget select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.add-budget input:focus,
+.add-budget select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.add-budget button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.add-budget .btn-add {
+    background: #667eea;
+    color: white;
+}
+
+.add-budget .btn-add:hover {
+    background: #5568d3;
+}
+
+.add-budget .btn-cancel {
+    background: #999;
+    color: white;
+}
+
+.add-budget .btn-cancel:hover {
+    background: #777;
+}
+
+.budgets-list {
+    display: grid;
+    gap: 15px;
+}
+
+.budget-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.budget-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.budget-status {
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.budget-status.warning {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.budget-status.ok {
+    background: #d4edda;
+    border: 2px solid #28a745;
+    color: #155724;
+}
+
+.budget-progress {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 20px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.budget-progress-bar {
+    background: #51cf66;
+    height: 100%;
+    transition: width 0.3s, background 0.3s;
+}
+
+.budget-progress-bar.warning {
+    background: #ffc107;
+}
+
+.budget-progress-bar.danger {
+    background: #ff6b6b;
+}
+
+.budget-stats {
+    font-size: 12px;
+    color: #666;
+}
+
+.btn-delete-budget {
+    width: 100%;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.btn-delete-budget:hover {
+    background: #ff5252;
+}
+
+/* COMPARISON */
+.comparison-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.comparison-container h2 {
+    text-align: center;
+}
+
+.comparison-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.comparison-month {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.comparison-month h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.comparison-stat {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.comparison-stat-value {
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+}
+
+.comparison-improvement {
+    margin-top: 15px;
+    padding: 10px;
+    background: #d4edda;
+    border-radius: 8px;
+    color: #155724;
+    font-weight: bold;
+}
+
+.comparison-decline {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 8px;
+    color: #721c24;
+    font-weight: bold;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+    #appScreen {
+        padding: 15px;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .balance-amount {
+        font-size: 36px;
+    }
+
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card p {
+        font-size: 20px;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .side-by-side-container {
+        grid-template-columns: 1fr;
+    }
+
+    .side-left {
+        position: static;
+    }
+
+    .header-with-button {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 20px;
+    }
+
+    .login-container h1 {
+        font-size: 24px;
+    }
+
+    #appScreen {
+        padding: 10px;
+    }
+
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .add-section {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* BUDGETS - Make populated state show side-by-side like Goals */
+#budgetsPopulatedState .side-by-side-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    align-items: start;
+}
+
+#budgetsPopulatedState .budgets-list {
+    display: grid;
+    gap: 15px;
+}
+
+/* COMPARISON - Keep as grid */
+.comparison-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* EMPTY STATE */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    min-height: 400px;
+    text-align: center;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 1000px; /* Changes maximum allowed width */
+    width: 100%;       /* Makes it scale down naturally */
+    margin: 0 auto;    /* Centers the card perfectly */
+}
+
+/* Fixes the wide budget layout container directly */
+#budgetsTab, 
+#budgetsTab .empty-state,
+div[id*="budget"] {
+    max-width: 1000px !important; 
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+#budgetsTab,
+#comparisonTab {
+    width: 100%;
+    min-width: 100%;
+}
+
+#budgetsTab .populated-state,
+#comparisonTab .comparison-container {
+    width: 100%;
+    min-width: 100%;
+}
