@@ -1,2 +1,3 @@
-# Student-Finance-Tracker
-A personal finance tracker designed to help students manage expenses, budgets, goals, and spending comparisons.
+# PocketPilot - Student Finance Tracker 
+Track. Plan. Save.
+A personal finance management web application designed to help students track their income, manage expenses, set budgets, monitor savings goals, and understand their spending habits.
